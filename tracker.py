@@ -85,9 +85,11 @@ with open('tledata.txt', 'r') as data:
         target = i
         if target== 10:
             break
-#with open('tles.json', 'w') as fp:
-    #print(json.dump(tles, fp, indent=4))
-    #sys.stdout.flush()
+# Opens and saves a JSON file with the current data (good for visualization)
+with open('tles.json', 'w') as fp:
+    print(json.dump(tles, fp, indent=4))
+    sys.stdout.flush()
 
-print(json.dumps(tles))
-sys.stdout.flush()
+# Below should be in use for spawing JSON files into RESTful API
+#print(json.dumps(tles))
+#sys.stdout.flush()
