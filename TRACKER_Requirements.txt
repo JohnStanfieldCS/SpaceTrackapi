@@ -1,0 +1,4 @@
+pip install asyncio
+pip install systems
+pip install spacetrack
+pip install spacetrackapi
