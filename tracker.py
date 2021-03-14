@@ -28,10 +28,6 @@ loop = asyncio.get_event_loop()
 loop.run_until_complete(download_latest_tles())
 
 
-with open('tleout.txt', 'w') as outfile, open('tle_latest.txt', 'r') as infile:
-    for line in infile:
-        #outfile.write(line.splitlines())
-        outfile.write(line.replace('   ',' ').strip())
 i = 0
 with open('tle.txt', 'w') as outfile, open('tleout.txt', 'r') as infile:
     for line in infile:
@@ -51,17 +47,16 @@ with open('tledata.txt', 'w') as outfile:
         outfile.write(data + '\n')
         j = j+1
 
-
 tles = []
-i =0
+counter =0
 with open('tledata.txt', 'r') as data:
     for line in data:
-        i = i+1
+        counter = counter+1
         line = line.strip()
         ld = line.split(' ')
         #print(line[1])
         temp_tle = {}
-        linval = (i % 2)
+        linval = (counter % 2)
         if linval > 0:
             temp_tle = {
                 "element set": ld[0],
@@ -82,8 +77,7 @@ with open('tledata.txt', 'r') as data:
                       }
         tles.append(temp_tle)
 
-        target = i
-        if target== 10:
+        if counter == j-1:
             break
 # Opens and saves a JSON file with the current data (good for visualization)
 with open('tles.json', 'w') as fp:
