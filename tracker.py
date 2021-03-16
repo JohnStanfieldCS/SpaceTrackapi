@@ -16,7 +16,7 @@ async def download_latest_tles():
             iter_lines=True, 
             ordinal=1, 
             epoch='>now-60',
-            norad_cat_id = (25544, 44238, 44252, 44289, 44713, 44717),
+            norad_cat_id = (25544),
             orderby=['norad_cat_id'],
             format='tle')
 
@@ -27,14 +27,15 @@ async def download_latest_tles():
 loop = asyncio.get_event_loop()
 loop.run_until_complete(download_latest_tles())
 
-
+with open('tleout.txt', 'w') as outfile, open('tle_latest.txt', 'r') as infile:
+    for line in infile:
+        outfile.write(line.replace('   ',' ').strip())
 i = 0
-with open('tle.txt', 'w') as outfile, open('tleout.txt', 'r') as infile:
+with open('tleout.txt', 'r') as infile:
     for line in infile:
         i = i+1
         line = line.strip()
         ldata = line.split('$')
-        #outfile.write(ldata + '\n')
 
 with open('tledata.txt', 'w') as outfile:
     j = 0
@@ -47,37 +48,45 @@ with open('tledata.txt', 'w') as outfile:
         outfile.write(data + '\n')
         j = j+1
 
+with open('tledata.txt', 'r') as inF:
+    tlelist = []
+    count = 1
+    for line in inF:
+        line = line.rstrip()
+
+        if count % 2 == 0:
+            tlelist.append(old_line + ' ' + line)
+        else: 
+            old_line = line
+        count += 1
+
+with open('TLEcomb.txt', 'w') as outF:
+    satnum = 0
+    for line in tlelist: 
+        data = tlelist[satnum]
+        outF.write(data + ' \n')
+
 tles = []
 counter =0
-with open('tledata.txt', 'r') as data:
+with open('TLEcomb.txt', 'r') as data:
     for line in data:
         counter = counter+1
         line = line.strip()
         ld = line.split(' ')
-        #print(line[1])
-        temp_tle = {}
-        linval = (counter % 2)
-        if linval > 0:
-            temp_tle = {
-                "element set": ld[0],
-                "Satellite Number": ld[1],
+        temp_tle = {
+                "Satellite Number": ld[10],
                 "Element Epoch": ld[3],
-                "Mean Motion Deriv": ld[4]
-                        }
-        if linval == 0:
-            temp_tle = {
-                "element set": ld[0],
-                "Satellite Number": ld[1],
-                "inclination": ld[2],
-                "RAAN": ld[3],
-                "Eccentricity": ld[4],
-                "Argument of Perigee": ld[5],
-                "Mean Anomaly": ld[6],
-                "Mean Motion": ld[7],
+                "Mean Motion Derivative": ld[4],
+                "inclination": ld[11],
+                "RAAN": ld[12],
+                "Eccentricity": ld[13],
+                "Argument of Perigee": ld[14],
+                "Mean Anomaly": ld[15],
+                "Mean Motion": ld[16],
                       }
         tles.append(temp_tle)
 
-        if counter == j-1:
+        if counter == count-1:
             break
 # Opens and saves a JSON file with the current data (good for visualization)
 with open('tles.json', 'w') as fp:
