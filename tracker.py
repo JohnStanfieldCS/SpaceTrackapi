@@ -16,7 +16,7 @@ async def download_latest_tles():
             iter_lines=True, 
             ordinal=1, 
             epoch='>now-60',
-            norad_cat_id = (25544),
+            norad_cat_id = (47854,47760, 47768, 47757),
             orderby=['norad_cat_id'],
             format='tle')
 
@@ -65,6 +65,7 @@ with open('TLEcomb.txt', 'w') as outF:
     for line in tlelist: 
         data = tlelist[satnum]
         outF.write(data + ' \n')
+        satnum = satnum + 1
 
 tles = []
 counter =0
